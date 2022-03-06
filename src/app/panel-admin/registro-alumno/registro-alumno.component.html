@@ -1,0 +1,210 @@
+<div class="row p-1">
+    <div class="offset-md-2 col-md-8  offset-sm-1 col-sm-10  col-12 mt-5 text-secondary">
+        <form autocomplete="off"  [formGroup]="formularioAlumno" (ngSubmit)="submitForm()" class="row">
+            
+            <h4>Alumno:</h4>
+
+            
+            <div class="mb-1 col-md-4 m-0 col-12">
+              <input type="text"  class="form-control " formControlName="nombre" id="nombre" name="nombre" placeholder="Nombre">
+              <span class="form-text text-danger"
+              *ngIf="campoNoValido('nombre')">{{ nombreErrorMsg }}</span>
+            </div>
+            <div class="mb-1 col-12 col-md-8 m-0">
+                <input  type="text"  class="form-control " formControlName="apellidos" id="apellidos" placeholder="Apellidos">
+                <span class="form-text text-danger"
+                *ngIf="campoNoValido('apellidos')">{{ apellidosErrorMsg }}</span>
+            </div>
+           
+            <div class="mb-1 col-md-4 m-0 col-12">
+                <input  type="text"  class="form-control "  placeholder="DNI" formControlName="dni" id="dni" >
+                <span class="form-text text-danger"
+                *ngIf="campoNoValido('dni')">{{ dniErrorMsg }}</span>
+            </div>
+
+            <div class="col-12 col-md-8 m-0 mb-1">
+                <select class="form-select" formControlName="aula" aria-label="Aula">
+                    <option *ngFor="let aula of aulas; let i=index"  value="{{aula.id}}">{{aula.nombre}}</option>
+                    
+
+                    
+
+                  </select>       
+                  <span class="form-text text-danger"
+                  *ngIf="campoNoValido('aula')">{{ aulaErrorMsg }}</span>
+    
+            </div>
+
+            <div class="mb-3  m-0 col-12">
+                <input  type="text"  class="form-control " formControlName="direccion" placeholder="Dirección" id="direccion" >
+            </div>
+
+            <div class=" col-md-2 m-0 w-50 mb-3">
+                <label for="fecha" class="form-label">Nacimiento:</label>
+                <input  type="date" formControlName="nacimiento"  class="form-control "  id="fecha">
+                <span class="form-text text-danger"
+                *ngIf="campoNoValido('nacimiento')">{{ fechaErrorMsg }}</span>
+                
+            </div>
+
+            <div class=" col-md-4 m-0 w-50 mb-3">
+                <label for="horario" class="form-label">Horario:</label>
+
+                <div class="col-12"></div>
+                <input class="inputs-peque form-control me-1" type="time" formControlName="horaEntrada"  id="horario-entrada">
+                <input   class="inputs-peque form-control" type="time" formControlName="horaSalida"  id="horario-salida">
+            </div>
+
+                     
+               
+            <div class="mb-1  m-0 col-12">
+                <select class="form-select" formControlName="comida" aria-label="alimentacion">
+                    <option selected value="5">Alimentación</option>
+                    <option value="Comida">Comida</option>
+                    <option value="Biberón">Biberón</option>
+                    <option value="Biberón y Comida">Biberón + Comida</option>
+                    </select>   
+                    <span class="form-text text-danger"
+              *ngIf="campoNoValido('comida')">{{ comidaErrorMsg }}</span> 
+            </div>
+
+            <div class="mb-4 form-check">
+                <input type="checkbox" formControlName="comeEnCentro" class="form-check-input m-1" id="comeEnCentro">
+                <label class="form-check-label " for="exampleCheck1">No come en el centro habitualmente</label>
+            </div>
+
+              
+
+            <div >
+            <label for="observaciones" class="form-label">Observaciones:</label>
+            <textarea class="form-control" formControlName="observaciones" id="observaciones" rows="2"></textarea>
+            </div>
+
+
+
+            <div class="col-12 d-flex mt-5" >
+
+                <div class="col-10">
+                    <h4>Tutores:</h4>
+                </div>
+                
+
+
+            </div>
+
+
+            <!-- <div class="mb-1  m-0 col-12 d-flex">            
+            
+                <div class="col-10">
+                    <select *ngFor="let tutor of tutoresExistentesLength" class="form-select" aria-label="alimentacion">
+                        <option selected value="5">--Escoge Tutor--</option>
+                        <option *ngFor="let tutor of tutoresExistentes; let i =index" value="{{tutor.id}}">{{tutor.nombre}}</option>
+                       
+                    </select>    
+                    </div>
+                <div class="col-2 text-end">
+                    <a ><i class="bi bi-person-plus text-end" style="color: rgb(0, 0, 0);cursor:pointer; font-size: 1.5rem;"></i></a>
+                </div>
+            
+            </div> -->
+
+           
+
+
+            <div class="col-12 text-end align-center mt-4">
+
+
+                <p class="">Añadir tutor nuevo
+                
+            
+            
+                <a class="ms-2" (click)="agregarTutor()"><i class="bi bi-person-plus text-end" style="color: rgb(0, 0, 0);cursor:pointer; font-size: 1.5rem;"></i></a>
+            </p>
+            </div>
+
+
+            <div formArrayName="tutores">
+
+
+            
+           <div class="row mt-4 p-0 m-0" *ngFor="let tutor of tutoresArr.controls;let i=index">
+
+
+            <div class="row mt-4 p-0 m-0" [formGroupName]="i">
+            
+
+            
+            <div class="col-12 d-flex " >
+
+                <div class="col-10">
+                    <p>Tutor nuevo  :</p>
+                </div>
+                <div class="col-2 text-end">
+                    
+                </div>
+
+
+            </div>
+
+            <div class="mb-1 col-md-4 m-0 col-12" >
+                <input type="text"  class="form-control " formControlName="nombreTutor" id="nombreTutor{{tutor.id}}" placeholder="Nombre">
+                <span class="form-text text-danger"
+                *ngIf="campoNoValidoArray('nombreTutor',i)">{{ nombreErrorMsg }}</span>
+                
+              </div>
+              <div class="mb-1 col-12 col-md-8 m-0">
+                  <input  type="text"  class="form-control " formControlName="apellidoTutor" id="apellidosTutor{{tutor.id}}" placeholder="Apellidos">
+                  <span class="form-text text-danger"
+                  *ngIf="campoNoValidoArray('apellidoTutor',i)">{{ apellidosErrorMsg }}</span>
+                 
+                </div>
+             
+              <div class="mb-1 col-md-4 m-0 col-12">
+                  <input  type="text"  class="form-control " formControlName="dniTutor" placeholder="DNI" id="dniTutor{{tutor.id}}" >
+                  <span class="form-text text-danger"
+                  *ngIf="campoNoValidoArray('dniTutor',i)">{{ dniTutorErrorMsg }}</span>
+              </div>
+  
+              <div class="col-12 col-md-8 m-0 mb-1">
+                <input  type="email"  class="form-control " formControlName="emailTutor" id="emailTutor{{tutor.id}}" placeholder="Email">
+                <span class="form-text text-danger"
+                *ngIf="campoNoValidoArray('emailTutor',i)">{{ emailErrorMsg }}</span>
+            </div>
+
+              <div class="mb-1 col-md-4 m-0 col-12">
+                <input  type="text"  class="form-control " formControlName="tlfTutor"  placeholder="Tlf" id="tlfTutor{{tutor.id}}" >
+            </div>
+
+            <div class="col-12 col-md-8 m-0 mb-1">
+              <input  type="password"  class="form-control " formControlName="passwordTutor" id="passwordTutor{{tutor.id}}" placeholder="Contraseña">
+                
+              <span class="form-text text-danger"
+              *ngIf="campoNoValidoArray('passwordTutor',i)">{{ passwordErrorMsg }}</span>
+           
+            </div>
+
+            <!-- <div class="mb-4 form-check">
+                <input type="checkbox" class="form-check-input m-1" id="recordar">
+                <label class="form-check-label " for="exampleCheck1">Crear Usuario para entrar en aplicación</label>
+            </div> -->
+
+            <div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+            <div class=" offset-md-6 col-2  m-2 p-2">
+                <button class="btn  me-2 btn btn-primary " >Cancelar</button>
+            </div>
+
+            
+            <div class=" offset-md-6 col-2  m-2 p-2">
+                <button class="btn  btn btn-primary "  type="submit">Guardar</button>
+            </div>
+
+
+          </form>
+    </div>
+</div>

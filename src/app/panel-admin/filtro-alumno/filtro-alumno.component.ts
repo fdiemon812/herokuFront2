@@ -1,6 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AlumnoService } from '../services/alumno.service';
 import { AulaInterface } from '../interfaces/aula.interface';
+import { ActivatedRoute } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-filtro-alumno',
@@ -9,13 +11,18 @@ import { AulaInterface } from '../interfaces/aula.interface';
 })
 export class FiltroAlumnoComponent implements OnInit {
 
-  idAula!:number;
+  idAula:number=0;
   aulas!:AulaInterface[];
-  constructor(private alumnoService:AlumnoService) { }
+  constructor(private alumnoService:AlumnoService, private activatedRoute:ActivatedRoute) { }
 
   ngOnInit(): void {
 
-    this.listarAulas();
+    this.activatedRoute.queryParams.subscribe({
+      next: ((params) => {
+        this.changeCentro((params['centro']));
+      })
+    })
+
   }
 
 
@@ -24,18 +31,17 @@ export class FiltroAlumnoComponent implements OnInit {
 
 
 
+   changeCentro(centro:string) {
+    
+    this.alumnoService.cambiarCentro(centro);
+    this.listarAulas();
+
+   }
 
   cambiarAula(){
-    console.log("emitiendo");
-    console.log(this.idAula);
-
-
-    this.aulaEvento.emit(this.idAula);
-
-
     
-    console.log(this.idAula);
-    
+
+    this.aulaEvento.emit(this.idAula);    
   }
 
   listarAulas(){
@@ -47,6 +53,16 @@ export class FiltroAlumnoComponent implements OnInit {
         this.aulas=resp;
       },
       error:error=>{
+
+
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Ups... Algo va mal',
+          text: 'Intentalo más tarde',
+          showConfirmButton: false,
+          timer: 2000
+        })
 
       }
     })

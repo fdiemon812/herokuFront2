@@ -3,15 +3,15 @@ import { Injectable, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
 import { AlumnoInterface } from "../interfaces/alumno.interface";
-import { CentroService } from './centro.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AlumnoService {
     
-    centro:number= this.centroService.obtenerCentro;
-    constructor(private http:HttpClient, private centroService: CentroService){
+    centro:any=1;
+    isPrimera:boolean=true;
+    constructor(private http:HttpClient, ){
 
     }
 
@@ -20,7 +20,10 @@ export class AlumnoService {
 
     
 
-
+    /**
+     * 
+     * @returns Lista todos los alumnos de un centro
+     */
 
     listarAlumnos():Observable<AlumnoInterface[]>{
 
@@ -34,7 +37,11 @@ export class AlumnoService {
         return this.http.get<AlumnoInterface[]>(url, {headers});
     }
 
-
+    /**
+     * 
+     * @param idAulaInput Lista los alumnos de un aula determinada en un centro determinada
+     * @returns 
+     */
     listarAlumnosAula(idAulaInput:number):Observable<AlumnoInterface[]>{
 
         const url = `${ environment.urlApi }/centro/${this.centro}/aula/${idAulaInput}/alumnos`;
@@ -45,6 +52,22 @@ export class AlumnoService {
         return this.http.get<AlumnoInterface[]>(url, {headers});
     }
 
+
+    /**
+     * Registra un alumno 
+     * @param nombre 
+     * @param apellidos 
+     * @param dni 
+     * @param fechaNacimiento 
+     * @param direccion 
+     * @param comida 
+     * @param horaEntrada 
+     * @param horaSalida 
+     * @param observaciones 
+     * @param aula 
+     * @param comeEnCentro 
+     * @returns 
+     */
     registrarAlumno(nombre:string, apellidos:string, dni:string,
          fechaNacimiento:Date, direccion:string, comida:string, 
          horaEntrada:string, horaSalida:string, observaciones:string, aula:any, comeEnCentro:boolean):Observable<AlumnoInterface>{
@@ -64,7 +87,16 @@ export class AlumnoService {
 
 
 
-
+    /**
+     * 
+     * @param nombre Registra un tutor
+     * @param apellidos 
+     * @param dni 
+     * @param tlf 
+     * @param email 
+     * @param password 
+     * @returns 
+     */
     registrarTutor(nombre: string, apellidos: string, 
         dni: string, tlf: string, email: string, password: string):Observable<any> {
 
@@ -73,13 +105,19 @@ export class AlumnoService {
         const headers = new HttpHeaders() .set('Authorization',
          `Bearer ${localStorage.getItem('token')}` );
         const body= {nombre, apellidos, dni, tlf, email, password, role:"TUTOR"}
-        console.log(body )
          return this.http.post<any>(url, body, {headers});
 
 
     }
 
 
+
+    /**
+     * Agrega un aluno-tutor
+     * @param email 
+     * @param idAlumno 
+     * @returns 
+     */
     agregarTutorAlumno(email:string, idAlumno:number ):Observable<any>{
 
 
@@ -92,9 +130,11 @@ export class AlumnoService {
 
     }
 
-
+    /**
+     * 
+     * @returns Lista las aulas de un centro
+     */
     listarAula():Observable<any>{
-
 
         const url = `${ environment.urlApi }/centro/${this.centro}/aulas`;
         const headers = new HttpHeaders() .set('Authorization',
@@ -102,6 +142,18 @@ export class AlumnoService {
                 
 
         return this.http.get<any>(url, {headers});
+    }
+
+
+    cambiarCentro(centro:any){
+        
+        if(centro==null){
+            this.centro=1;
+            this.isPrimera=false;
+        }else{
+            this.centro= parseInt(centro);
+        }
+        
     }
 
 

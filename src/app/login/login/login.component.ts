@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm, PatternValidator } from '@angular/forms';
 import { Router } from '@angular/router';
+import { catchError, map, of } from 'rxjs';
+import Swal from 'sweetalert2';
 import { LoginService } from '../services/login.service';
 
 @Component({
@@ -43,7 +45,7 @@ export class LoginComponent implements OnInit {
 
     if(this.miFormulario.valid){
       this.login();
-      
+          
     }
 
     
@@ -60,13 +62,45 @@ export class LoginComponent implements OnInit {
 
         next: resp => { 
           localStorage.setItem("token", resp.jwt_token)
-          this.router.navigateByUrl('home');
+          this.userRol();  
+           this.router.navigateByUrl('home');
 
         },
         error: error =>{
-          this.isCorrectPass=true;
+          if(error.status==404){
+
+            this.isCorrectPass=true;
+          }else{
+
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Ups... Algo va mal',
+              text: 'Intentalo más tarde',
+              showConfirmButton: false,
+              timer: 2000
+            })
+          }
+
         }
     })
+  }
+
+  userRol(){
+   this.loginService.isAdmin().subscribe({
+
+    next: resp => { 
+      
+      this.loginService.cambiarRol(resp.role);
+
+    },
+    error: error =>{
+
+      this.isCorrectPass=true;
+    }
+})
+  
+
   }
 
   camposVacios(){
